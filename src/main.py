@@ -1,20 +1,29 @@
 from requests_html import HTMLSession
 
-try:
-    url = 'https://time.com'
-    session = HTMLSession()
-    response = session.get(url)
-except ConnectionError as ex:
-    print(ex)
-    exit()
-except Exception as ex:
-    print(ex)
-    exit()
+def get_html_obj(url):
+    try:
+        session = HTMLSession()
+        response = session.get(url)
+    except ConnectionError as ex:
+        print(ex)
+        exit()
+    except Exception as ex:
+        print(ex)
+        exit()
 
-print(response)
+    print(response)
+    return response.html
 
-html = response.html
-briefs = html.find('.column-tout')
+"""
+MAIN PROGRAM
+"""
+url = 'https://time.com/section/tech/'
+html = get_html_obj(url)
+articles = html.find('.article-info a')
+article_links = []
 
-for brief in briefs:
-    print(brief.links)
+for article in articles:
+    link = url[:-1] + article.attrs['href']
+    article_links.append(link)
+
+print(article_links)
